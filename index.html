@@ -1,897 +1,583 @@
 ﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <title>B2B BANQUE - Tableau de bord</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#0f4c81',
-                        secondary: '#0f9dbf',
-                        accent: '#3a86ff',
-                        dark: '#1a1a2e',
-                        light: '#f8f9fa',
-                        b2bBlue: '#003366', /* Main B2B Blue */
-                        b2bYellow: '#FFD700', /* Main B2B Yellow */
-                        b2bLightBlue: '#f0f8ff', /* Lighter background often used */
-                        b2bDarkBlue: '#002244' /* Darker shade of B2B Blue */
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
-                        'hard': '0 4px 12px rgba(0, 0, 0, 0.15)'
-                    },
-                    transitionProperty: {
-                        'height': 'height',
-                        'width': 'width',
-                        'transform': 'transform',
-                        'opacity': 'opacity',
-                        'visibility': 'visibility'
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f5f7fa; /* A very light grey for overall body */
-        }
-        .card {
-            transition: all 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        .nav-item {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        .btn {
-            transition: all 0.2s ease;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-        .status-badge-blocked {
-            animation: pulse-red 1.5s infinite alternate;
-        }
-        @keyframes pulse-red {
-            0% { transform: scale(1); background-color: #ef4444; }
-            100% { transform: scale(1.05); background-color: #dc2626; }
-        }
-        .page, .sub-page {
-            opacity: 0;
-            visibility: hidden;
-            position: absolute;
-            width: 100%;
-            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
-        }
-        .page.active, .sub-page.active {
-            opacity: 1;
-            visibility: visible;
-            position: static;
-        }
-        
-        /* Stronger text colors and larger amounts */
-        .amount-credit { 
-            color: #27ae60; 
-            font-weight: 700; /* Bold */
-            font-size: 1.5rem; /* Larger */
-        }
-        .amount-debit { 
-            color: #e74c3c; 
-            font-weight: 700; /* Bold */
-            font-size: 1.5rem; /* Larger */
-        }
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>B2B BANQUE - Tableau de bord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f4c81',
+                        secondary: '#0f9dbf',
+                        accent: '#3a86ff',
+                        dark: '#1a1a2e',
+                        light: '#f8f9fa',
+                        b2bBlue: '#003366', /* Main B2B Blue */
+                        b2bYellow: '#FFD700', /* Main B2B Yellow */
+                        b2bLightBlue: '#f0f8ff', /* Lighter background often used */
+                        b2bDarkBlue: '#002244' /* Darker shade of B2B Blue */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
+                        'hard': '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'width': 'width',
+                        'transform': 'transform',
+                        'opacity': 'opacity',
+                        'visibility': 'visibility'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa; /* A very light grey for overall body */
+        }
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .btn {
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .status-badge-blocked {
+            animation: pulse-red 1.5s infinite alternate;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(1); background-color: #ef4444; }
+            100% { transform: scale(1.05); background-color: #dc2626; }
+        }
+        .page, .sub-page {
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            width: 100%;
+            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
+        }
+        .page.active, .sub-page.active {
+            opacity: 1;
+            visibility: visible;
+            position: static;
+        }
+        
+        /* Stronger text colors and larger amounts */
+        .amount-credit { 
+            color: #27ae60; 
+            font-weight: 700; /* Bold */
+            font-size: 1.5rem; /* Larger */
+        }
+        .amount-debit { 
+            color: #e74c3c; 
+            font-weight: 700; /* Bold */
+            font-size: 1.5rem; /* Larger */
+        }
 
-        .alert-blocked {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            border-left: 4px solid #ef4444;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-        }
-        .alert-blocked .icon {
-            margin-right: 0.75rem;
-            color: #ef4444;
-            font-size: 1.5rem;
-        }
-        .header-logo {
-            height: 40px;
-            width: auto;
-        }
+        .alert-blocked {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .alert-blocked .icon {
+            margin-right: 0.75rem;
+            color: #ef4444;
+            font-size: 1.5rem;
+        }
+        .header-logo {
+            height: 40px;
+            width: auto;
+        }
 
-        /* Dashboard specific styles with dominant colors and transparent logo */
-        #dashboard-page {
-            background-color: #f5f7fa; /* Base light background */
-            position: relative;
-            z-index: 1;
-            overflow: hidden; /* Important for background image */
-        }
-        #dashboard-page::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('images.png'); /* Your logo */
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: 50%; /* Adjust size as needed, e.g., 30% or 70% */
-            opacity: 0.04; /* Very transparent, showing through the 'white' background */
-            z-index: -1;
-            pointer-events: none; /* Ensures clicks pass through to content */
-        }
+        /* Dashboard specific styles with dominant colors and transparent logo */
+        #dashboard-page::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('images.png'); /* Your logo */
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 50%; /* Adjust size as needed, e.g., 30% or 70% */
+            opacity: 0.04; /* Very transparent, showing through the 'white' background */
+            z-index: -1;
+            pointer-events: none; /* Ensures clicks pass through to content */
+        }
 
-        /* Intensification des couleurs B2B */
-        .sidebar {
-            background: linear-gradient(to bottom, #003366, #002244); /* Deep B2B Blue */
-        }
-        .nav-item.active {
-            background-color: #FFD700; /* B2B Yellow */
-            color: #003366; /* B2B Blue text on active */
-            font-weight: 600;
-        }
-        .nav-item:hover {
-            background-color: rgba(255, 215, 0, 0.7); /* Slightly transparent B2B Yellow on hover */
-            color: #003366;
-        }
-        /* Gradient cards for highlight */
-        .card.bg-gradient-to-r.from-b2bBlue.to-b2bYellow {
-            background: linear-gradient(135deg, #003366, #FFD700); /* Consistent B2B Blue to Yellow gradient */
-            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2); /* Stronger shadow for accent */
-            color: white;
-        }
-        .btn-accent {
-            background-color: #FFD700;
-            color: #003366;
-            font-weight: 600;
-        }
-        .btn-accent:hover {
-            background-color: #e6c300;
-            transform: translateY(-2px);
-        }
-        header.bg-primary {
-            background: linear-gradient(to right, #003366, #002244);
-        }
+        /* Intensification des couleurs B2B */
+        .sidebar {
+            background: linear-gradient(to bottom, #003366, #002244); /* Deep B2B Blue */
+        }
+        .nav-item.active {
+            background-color: #FFD700; /* B2B Yellow */
+            color: #003366; /* B2B Blue text on active */
+            font-weight: 600;
+        }
+        .nav-item:hover {
+            background-color: rgba(255, 215, 0, 0.7); /* Slightly transparent B2B Yellow on hover */
+            color: #003366;
+        }
+        /* Gradient cards for highlight */
+        .card.bg-gradient-to-r.from-b2bBlue.to-b2bYellow {
+            background: linear-gradient(135deg, #003366, #FFD700); /* Consistent B2B Blue to Yellow gradient */
+            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2); /* Stronger shadow for accent */
+            color: white;
+        }
+        .btn-accent {
+            background-color: #FFD700;
+            color: #003366;
+            font-weight: 600;
+        }
+        .btn-accent:hover {
+            background-color: #e6c300;
+            transform: translateY(-2px);
+        }
+        header.bg-primary {
+            background: linear-gradient(to right, #003366, #002244);
+        }
 
-        /* Mobile specific styles for the Dashboard header (Name & Amount) */
-        @media (max-width: 767px) { /* Tailind's 'md' breakpoint is 768px, so this is for smaller screens */
-            .mobile-dashboard-header {
-                display: block !important; /* Force display on mobile */
-                background-color: #003366; /* B2B Blue background */
-                color: white;
-                padding: 1rem;
-                text-align: center;
-                margin-bottom: 1rem; /* Space before dashboard content */
-                border-bottom-left-radius: 12px;
-                border-bottom-right-radius: 12px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            }
-            .sidebar {
-                display: none; /* Hide sidebar on mobile when this header is shown */
-            }
-            main {
-                padding-top: 0 !important; /* Remove top padding from main to stick header to top */
-            }
-            /* Hide redundant elements on mobile */
-            .sidebar-user-info-card, .dashboard-main-logo {
-                display: none !important;
-            }
-        }
-        @media (min-width: 768px) { /* Hide on larger screens */
-            .mobile-dashboard-header {
-                display: none;
-            }
-            .sidebar-user-info-card, .dashboard-main-logo {
-                display: block; /* Show on desktop */
-            }
-        }
-    </style>
+        /* Mobile specific styles for the Dashboard header (Name & Amount) */
+        @media (max-width: 767px) { /* Tailind's 'md' breakpoint is 768px, so this is for smaller screens */
+            .mobile-dashboard-header {
+                display: block !important; /* Force display on mobile */
+                background-color: #003366; /* B2B Blue background */
+                color: white;
+                padding: 1rem;
+                text-align: center;
+                margin-bottom: 1rem; /* Space before dashboard content */
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            .sidebar {
+                display: none; /* Hide sidebar on mobile when this header is shown */
+            }
+            main {
+                padding-top: 0 !important; /* Remove top padding from main to stick header to top */
+            }
+            /* Hide redundant elements on mobile */
+            .sidebar-user-info-card, .dashboard-main-logo {
+                display: none !important;
+            }
+        }
+        @media (min-width: 768px) { /* Hide on larger screens */
+            .mobile-dashboard-header {
+                display: none;
+            }
+            .sidebar-user-info-card, .dashboard-main-logo {
+                display: block; /* Show on desktop */
+            }
+        }
+    </style>
 </head>
 <body class="min-h-screen">
-    <div id="home-page" class="min-h-screen flex flex-col page active">
-        <header class="bg-primary text-white shadow-md">
-            <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-                <div class="flex items-center">
-                    <img src="images.png" alt="B2B Banque Logo" class="header-logo mr-3">
-                    <span class="text-2xl font-bold">B2B BANQUE</span>
-                </div>
-                <div>
-                    <button id="login-btn" class="btn-accent px-6 py-2 rounded-lg font-medium shadow-md">
-                        Connexion
-                    </button>
-                </div>
-            </div>
-        </header>
+    <div id="home-page" class="min-h-screen flex flex-col page active">
+        <header class="bg-primary text-white shadow-md">
+            <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="images.png" alt="B2B Banque Logo" class="header-logo mr-3">
+                    <span class="text-2xl font-bold">B2B BANQUE</span>
+                </div>
+                <div>
+                    <button id="login-btn" class="btn-accent px-6 py-2 rounded-lg font-medium shadow-md">
+                        Connexion
+                    </button>
+                </div>
+            </div>
+        </header>
 
-        <main class="flex-grow flex items-center">
-            <div class="container mx-auto px-4 py-12 text-center">
-                <h1 class="text-4xl md:text-5xl font-bold text-dark mb-6">Votre banque en ligne, simplifiée</h1>
-                <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Gérer vos finances n'a jamais été aussi facile avec B2B BANQUE. Accédez à vos comptes, effectuez des virements et suivez vos transactions en toute sécurité.
-                </p>
-                <div class="flex justify-center space-x-4">
-                    <button id="register-btn" class="btn-accent px-8 py-3 rounded-lg shadow-lg hover:shadow-xl">
-                        Ouvrir un compte
-                    </button>
-                    <button id="login-btn-2" class="border-2 border-b2bYellow text-b2bBlue px-8 py-3 rounded-lg font-medium hover:bg-b2bYellow hover:text-b2bBlue transition">
-                        Se connecter
-                    </button>
-                </div>
-            </div>
-        </main>
+        <main class="flex-grow flex items-center">
+            <div class="container mx-auto px-4 py-12 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-dark mb-6">Votre banque en ligne, simplifiée</h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Gérer vos finances n'a jamais été aussi facile avec B2B BANQUE. Accédez à vos comptes, effectuez des virements et suivez vos transactions en toute sécurité.
+                </p>
+                <div class="flex justify-center space-x-4">
+                    <button id="register-btn" class="btn-accent px-8 py-3 rounded-lg shadow-lg hover:shadow-xl">
+                        Ouvrir un compte
+                    </button>
+                    <button id="login-btn-2" class="border-2 border-b2bYellow text-b2bBlue px-8 py-3 rounded-lg font-medium hover:bg-b2bYellow hover:text-b2bBlue transition">
+                        Se connecter
+                    </button>
+                </div>
+            </div>
+        </main>
 
-        <footer class="bg-dark text-white py-8">
-            <div class="container mx-auto px-4 text-center">
-                <p>©️ 2023 B2B BANQUE. Tous droits réservés.</p>
-            </div>
-        </footer>
-    </div>
+        <footer class="bg-dark text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>©️ 2023 B2B BANQUE. Tous droits réservés.</p>
+            </div>
+        </footer>
+    </div>
 
-    <div id="login-form" class="min-h-screen flex items-center justify-center bg-gray-100 p-4 page">
-        <div class="bg-white rounded-xl shadow-soft p-8 w-full max-w-md">
-            <div class="text-center mb-8">
-                <img src="images.png" alt="B2B Banque Logo" class="mx-auto mb-4 header-logo">
-                <h2 class="text-2xl font-bold text-dark">Connexion à votre espace</h2>
-            </div>
-            
-            <form id="login-form-content">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Identifiant</label>
-                    <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-b2bYellow focus:border-b2bYellow" placeholder="Votre identifiant" value="B2B098723" required>
-                </div>
-                
-                <div class="mb-6 relative">
-                    <label for="password-input" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-                    <input type="password" id="password-input" class="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 focus:ring-b2bYellow focus:border-b2bYellow" placeholder="Votre mot de passe" required>
-                    <button type="button" id="toggle-password-visibility" class="absolute inset-y-0 right-0 pr-3 flex items-center pt-5 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-eye" id="password-toggle-icon"></i>
-                    </button>
-                </div>
-                
-                <button type="submit" class="w-full btn-accent py-3 rounded-lg shadow-md hover:shadow-lg mb-4">
-                    Se connecter
-                </button>
-                
-                <div class="text-center">
-                    <a href="#" class="text-sm text-b2bBlue hover:underline font-medium">Mot de passe oublié ?</a>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div id="login-form" class="min-h-screen flex items-center justify-center bg-gray-100 p-4 page">
+        <div class="bg-white rounded-xl shadow-soft p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <img src="images.png" alt="B2B Banque Logo" class="mx-auto mb-4 header-logo">
+                <h2 class="text-2xl font-bold text-dark">Connexion à votre espace</h2>
+            </div>
+            
+            <form id="login-form-content">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Identifiant</label>
+                    <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-b2bYellow focus:border-b2bYellow" placeholder="Votre identifiant" value="B2B098723" required>
+                </div>
+                
+                <div class="mb-6 relative">
+                    <label for="password-input" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                    <input type="password" id="password-input" class="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 focus:ring-b2bYellow focus:border-b2bYellow" placeholder="Votre mot de passe" **value="CAB20908"** required>
+                    <button type="button" id="toggle-password-visibility" class="absolute inset-y-0 right-0 pr-3 flex items-center pt-5 text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-eye" id="password-toggle-icon"></i>
+                    </button>
+                </div>
+                
+                <button type="submit" class="w-full btn-accent py-3 rounded-lg shadow-md hover:shadow-lg mb-4">
+                    Se connecter
+                </button>
+                
+                <div class="text-center">
+                    <a href="#" class="text-sm text-b2bBlue hover:underline font-medium">Mot de passe oublié ?</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <div id="dashboard" class="min-h-screen flex flex-col md:flex-row page">
-        <div class="mobile-dashboard-header hidden md:hidden">
-            <img src="images.png" alt="B2B Banque Logo" class="h-8 mx-auto mb-2">
-            <p class="text-xl font-bold mb-1">Philippe marcel destres</p>
-            <p class="text-3xl font-extrabold text-b2bYellow">$2.260.000</p>
-            <p id="mobile-sidebar-status" class="text-sm text-red-300 font-semibold mt-1" style="display: none;">Compte Bloqué</p>
-        </div>
+    <div id="dashboard" class="min-h-screen flex flex-col md:flex-row page">
+        <div class="mobile-dashboard-header hidden md:hidden">
+            <img src="images.png" alt="B2B Banque Logo" class="h-8 mx-auto mb-2">
+            <p class="text-xl font-bold mb-1">Philippe marcel destres</p>
+            <p class="text-3xl font-extrabold text-b2bYellow">$2.260.000</p>
+            <p id="mobile-sidebar-status" class="text-sm text-red-300 font-semibold mt-1" style="display: none;">Compte Bloqué</p>
+        </div>
 
-        <aside class="sidebar text-white flex flex-col w-full md:w-64 transition-all duration-300">
-            <div class="p-4 flex items-center justify-center md:justify-start">
-                <img src="images.png" alt="B2B Banque Logo" class="header-logo mr-3">
-                <span class="logo-text text-xl font-bold">B2B BANQUE</span>
-            </div>
-            <nav class="flex-1 mt-8">
-                <div class="mb-8 px-4">
-                    <p class="text-xs uppercase font-bold text-gray-300 mb-2">Navigation</p>
-                    <ul>
-                        <li class="nav-item active rounded-lg py-2 px-3 mb-1 flex items-center" data-target="dashboard-page">
-                            <i class="fas fa-home nav-icon mr-3"></i>
-                            <span class="nav-text">Tableau de bord</span>
-                        </li>
-                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="comptes-page">
-                            <i class="fas fa-wallet nav-icon mr-3"></i>
-                            <span class="nav-text">Mes comptes</span>
-                        </li>
-                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="virements-page">
-                            <i class="fas fa-exchange-alt nav-icon mr-3"></i>
-                            <span class="nav-text">Virements</span>
-                        </li>
-                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="transactions-page">
-                            <i class="fas fa-list nav-icon mr-3"></i>
-                            <span class="nav-text">Transactions</span>
-                        </li>
-                    </ul>
-                </div>
+        <aside class="sidebar text-white flex flex-col w-full md:w-64 transition-all duration-300">
+            <div class="p-4 flex items-center justify-center md:justify-start">
+                <img src="images.png" alt="B2B Banque Logo" class="header-logo mr-3">
+                <span class="logo-text text-xl font-bold">B2B BANQUE</span>
+            </div>
+            <nav class="flex-1 mt-8">
+                <div class="mb-8 px-4">
+                    <p class="text-xs uppercase font-bold text-gray-300 mb-2">Navigation</p>
+                    <ul>
+                        <li class="nav-item active rounded-lg py-2 px-3 mb-1 flex items-center" data-target="dashboard-page">
+                            <i class="fas fa-home nav-icon mr-3"></i>
+                            <span class="nav-text">Tableau de bord</span>
+                        </li>
+                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="comptes-page">
+                            <i class="fas fa-wallet nav-icon mr-3"></i>
+                            <span class="nav-text">Mes comptes</span>
+                        </li>
+                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="virements-page">
+                            <i class="fas fa-exchange-alt nav-icon mr-3"></i>
+                            <span class="nav-text">Virements</span>
+                        </li>
+                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="transactions-page">
+                            <i class="fas fa-list nav-icon mr-3"></i>
+                            <span class="nav-text">Transactions</span>
+                        </li>
+                    </ul>
+                </div>
 
-                <div class="px-4 mb-8 sidebar-user-info-card">
-                    <div class="card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-4 text-white shadow-hard">
-                        <p class="text-sm font-semibold mb-1">Bonjour, Philippe marcel destres</p>
-                        <p class="opacity-90">Solde total : <span class="text-xl font-light">$4.200.000</span></p>
-                        <p id="sidebar-account-status" class="text-sm text-red-300 font-semibold mt-1" style="display: none;">Compte Bloqué</p>
-                    </div>
-                </div>
-                <div class="px-4">
-                    <p class="text-xs uppercase font-bold text-gray-300 mb-2">Paramètres</p>
-                    <ul>
-                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="profil-page">
-                            <i class="fas fa-user nav-icon mr-3"></i>
-                            <span class="nav-text">Mon profil</span>
-                        </li>
-                        <li class="nav-item rounded-lg py-2 px-3 flex items-center" data-target="aide-page">
-                            <i class="fas fa-question-circle nav-icon mr-3"></i>
-                            <span class="nav-text">Aide</span>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="p-4 mt-auto">
-                <button id="logout-btn-dashboard" class="w-full bg-red-500 text-white py-2 rounded-lg text-sm hover:bg-red-600">
-                    <i class="fas fa-sign-out-alt mr-1"></i> Déconnexion
-                </button>
-            </div>
-        </aside>
+                <div class="px-4 mb-8 sidebar-user-info-card">
+                    <div class="card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-4 text-white shadow-hard">
+                        <p class="text-sm font-semibold mb-1">Bonjour, Philippe marcel destres</p>
+                        <p class="opacity-90">Solde total : <span class="text-xl font-light">$4.200.000</span></p>
+                        <p id="sidebar-account-status" class="text-sm text-red-300 font-semibold mt-1" style="display: none;">Compte Bloqué</p>
+                    </div>
+                </div>
+                <div class="px-4">
+                    <p class="text-xs uppercase font-bold text-gray-300 mb-2">Paramètres</p>
+                    <ul>
+                        <li class="nav-item rounded-lg py-2 px-3 mb-1 flex items-center" data-target="profil-page">
+                            <i class="fas fa-user nav-icon mr-3"></i>
+                            <span class="nav-text">Mon profil</span>
+                        </li>
+                        <li class="nav-item rounded-lg py-2 px-3 flex items-center" data-target="aide-page">
+                            <i class="fas fa-question-circle nav-icon mr-3"></i>
+                            <span class="nav-text">Aide</span>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="p-4 mt-auto">
+                <button id="logout-btn-dashboard" class="w-full bg-red-500 text-white py-2 rounded-lg text-sm hover:bg-red-600">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Déconnexion
+                </button>
+            </div>
+        </aside>
 
-        <main class="flex-1 overflow-y-auto bg-gray-50 relative">
-            <div id="dashboard-page" class="sub-page active p-4 md:p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue">Tableau de bord</h1>
-                    <div class="flex items-center">
-                        <span class="text-sm text-gray-500 mr-2">Aujourd'hui</span>
-                        <span class="bg-white px-3 py-1 rounded-full text-sm shadow-soft">
-                            <i class="far fa-calendar mr-1"></i>
-                            <span id="current-date"></span>
-                        </span>
-                    </div>
-                </div>
-                
-                <div id="account-blocked-alert" class="alert-blocked" style="display: none;">
-                    <i class="fas fa-exclamation-triangle icon"></i>
-                    <div>
-                        <p class="font-bold">Votre compte est bloqué.</p>
-                        <p class="text-sm">Toutes les transactions sont actuellement désactivées. Veuillez contacter le support pour plus d'informations.</p>
-                    </div>
-                </div>
+        <main class="flex-1 overflow-y-auto bg-gray-50 relative">
+            <div id="dashboard-page" class="sub-page active p-4 md:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue">Tableau de bord</h1>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-500 mr-2">Aujourd'hui</span>
+                        <span class="bg-white px-3 py-1 rounded-full text-sm shadow-soft">
+                            <i class="far fa-calendar mr-1"></i>
+                            <span id="current-date"></span>
+                        </span>
+                </div>
+                </div>
+                
+                <div id="account-blocked-alert" class="alert-blocked" style="display: none;">
+                    <i class="fas fa-exclamation-triangle icon"></i>
+                    <div>
+                        <p class="font-bold">Votre compte est bloqué.</p>
+                        <p class="text-sm">Toutes les transactions sont actuellement désactivées. Veuillez contacter le support pour plus d'informations.</p>
+                    </div>
+                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div class="md:order-none order-first col-span-full md:col-span-1 card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-5 text-white shadow-hard">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm opacity-100 mb-1">Solde Total</p>
-                                <p class="text-3xl md:text-4xl font-bold">$4.200.000</p>
-                            </div>
-                            <div class="bg-white bg-opacity-20 p-2 rounded-full">
-                                <i class="fas fa-wallet text-sm"></i>
-                            </div>
-                        </div>
-                        <p class="text-xs opacity-80 mt-3">Compte Principal •••• 6789</p>
-                        <span id="main-account-status-ribbon-dashboard" class="status-badge-blocked inline-block absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full transform rotate-12">BLOQUÉ</span>
-                    </div>
-                    
-                    <div class="card bg-white rounded-xl p-5 shadow-soft">
-                        <p class="text-sm text-gray-600 mb-1">Dernier virement</p>
-                        <p class="text-2xl md:text-3xl font-bold text-b2bBlue">$1.000.200,00</p>
-                        <p class="text-xs text-gray-500 mt-1">15/06/2022 à 14:30</p>
-                    </div>
-                    
-                    <div class="card bg-white rounded-xl p-5 shadow-soft">
-                        <p class="text-sm text-gray-600 mb-1">Paiement</p>
-                        <p class="text-2xl md:text-3xl font-bold text-b2bBlue">$450,00</p>
-                        <p class="text-xs text-gray-500 mt-1">15 juillet 2022</p>
-                    </div>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="md:order-none order-first col-span-full md:col-span-1 card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-5 text-white shadow-hard">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm opacity-100 mb-1">Solde Total</p>
+                                <p class="text-3xl md:text-4xl font-bold">$4.200.000</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 p-2 rounded-full">
+                                <i class="fas fa-wallet text-sm"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs opacity-80 mt-3">Compte Principal •••• 6789</p>
+                        <span id="main-account-status-ribbon-dashboard" class="status-badge-blocked inline-block absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full transform rotate-12">BLOQUÉ</span>
+                    </div>
+                    
+                    <div class="card bg-white rounded-xl p-5 shadow-soft">
+                        <p class="text-sm text-gray-600 mb-1">Dernier virement</p>
+                        <p class="text-2xl md:text-3xl font-bold text-b2bBlue">$1.000.200,00</p>
+                        <p class="text-xs text-gray-500 mt-1">15/06/2022 à 14:30</p>
+                    </div>
+                    
+                    <div class="card bg-white rounded-xl p-5 shadow-soft">
+                        <p class="text-sm text-gray-600 mb-1">Paiement</p>
+                        <p class="text-2xl md:text-3xl font-bold text-b2bBlue">$450,00</p>
+                        <p class="text-xs text-gray-500 mt-1">15 juillet 2022</p>
+                    </div>
+                </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card bg-white rounded-xl p-6 shadow-soft">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-lg font-semibold text-b2bBlue">Activité récente</h2>
-                            <a href="#" class="text-sm text-b2bYellow font-bold" data-link="transactions-page">Voir tout</a>
-                        </div>
-                        <div class="space-y-4" id="recent-activity">
-                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
-                                <div class="flex items-center">
-                                    <div class="mr-3 bg-red-100 text-red-600 p-2 rounded-full">
-                                        <i class="fas fa-arrow-up text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-b2bBlue">Prélevement facture Hydro-Québec</p>
-                                        <p class="text-xs text-gray-500">Compte Principal</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-red-600">-$120,50</p>
-                                    <p class="text-xs text-gray-500">20/04/2022</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
-                                <div class="flex items-center">
-                                    <div class="mr-3 bg-green-100 text-green-600 p-2 rounded-full">
-                                        <i class="fas fa-arrow-down text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-b2bBlue">Prélevement Assurance</p>
-                                        <p class="text-xs text-gray-500">Compte Principal</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-green-600">+$50,00</p>
-                                    <p class="text-xs text-gray-500">19/04/2022</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
-                                <div class="flex items-center">
-                                    <div class="mr-3 bg-red-100 text-red-600 p-2 rounded-full">
-                                        <i class="fas fa-arrow-up text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-b2bBlue">Facture d'électricité</p>
-                                        <p class="text-xs text-gray-500">Compte Principal</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-red-600">-$85,75</p>
-                                    <p class="text-xs text-gray-500">18/04/2022</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card bg-white rounded-xl p-6 shadow-soft">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-b2bBlue">Activité récente</h2>
+                            <a href="#" class="text-sm text-b2bYellow font-bold" data-link="transactions-page">Voir tout</a>
+                        </div>
+                        <div class="space-y-4" id="recent-activity">
+                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <div class="mr-3 bg-red-100 text-red-600 p-2 rounded-full">
+                                        <i class="fas fa-arrow-up text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-b2bBlue">Prélevement facture Hydro-Québec</p>
+                                        <p class="text-xs text-gray-500">Compte Principal</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-red-600">-$120,50</p>
+                                    <p class="text-xs text-gray-500">20/04/2022</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <div class="mr-3 bg-green-100 text-green-600 p-2 rounded-full">
+                                        <i class="fas fa-arrow-down text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-b2bBlue">Prélevement Assurance</p>
+                                        <p class="text-xs text-gray-500">Compte Principal</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-green-600">+$50,00</p>
+                                    <p class="text-xs text-gray-500">19/04/2022</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <div class="mr-3 bg-red-100 text-red-600 p-2 rounded-full">
+                                        <i class="fas fa-arrow-up text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-b2bBlue">Facture d'électricité</p>
+                                        <p class="text-xs text-gray-500">Compte Principal</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-red-600">-$85,75</p>
+                                    <p class="text-xs text-gray-500">18/04/2022</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="card bg-white rounded-xl p-6 shadow-soft">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-lg font-semibold text-b2bBlue">Mes comptes</h2>
-                            <a href="#" class="text-sm text-b2bYellow font-bold" data-link="comptes-page">Gérer</a>
-                        </div>
-                        <div class="space-y-3" id="accounts-summary">
-                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
-                                <div class="flex items-center">
-                                    <div class="mr-3 bg-blue-100 text-blue-600 p-2 rounded-full">
-                                        <i class="fas fa-wallet text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-b2bBlue">Compte Principal</p>
-                                        <p class="text-xs text-gray-500">•••• 6789</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-b2bBlue">$2.800.000,00</p>
-                                    <p id="dashboard-main-account-status" class="text-xs text-gray-500">Bloqué</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
-                                <div class="flex items-center">
-                                    <div class="mr-3 bg-blue-100 text-blue-600 p-2 rounded-full">
-                                        <i class="fas fa-piggy-bank text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-b2bBlue">Compte Épargne</p>
-                                        <p class="text-xs text-gray-500">•••• 1234</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-b2bBlue">$1.600,000</p>
-                                    <p class="text-xs text-gray-500">Bloqué</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <div class="card bg-white rounded-xl p-6 shadow-soft">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-b2bBlue">Mes comptes</h2>
+                            <a href="#" class="text-sm text-b2bYellow font-bold" data-link="comptes-page">Gérer</a>
+                        </div>
+                        <div class="space-y-3" id="accounts-summary">
+                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <div class="mr-3 bg-blue-100 text-blue-600 p-2 rounded-full">
+                                        <i class="fas fa-wallet text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-b2bBlue">Compte Principal</p>
+                                        <p class="text-xs text-gray-500">•••• 6789</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-b2bBlue">$2.800.000,00</p>
+                                    <p id="dashboard-main-account-status" class="text-xs text-gray-500">Bloqué</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition">
+                                <div class="flex items-center">
+                                    <div class="mr-3 bg-blue-100 text-blue-600 p-2 rounded-full">
+                                        <i class="fas fa-piggy-bank text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-b2bBlue">Compte Épargne</p>
+                                        <p class="text-xs text-gray-500">•••• 1234</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-b2bBlue">$1.600,000</p>
+                                    <p class="text-xs text-gray-500">Bloqué</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <div id="comptes-page" class="sub-page p-4 md:p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue">Mes comptes</h1>
-                    <button class="btn bg-b2bYellow text-b2bBlue px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500" id="toggle-account-status-btn">
-                        <i class="fas fa-lock mr-1"></i> Gérer statut compte
-                    </button>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                    <div id="main-account-card" class="card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-5 text-white shadow-hard relative">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm opacity-90 mb-1">Compte Principal</p>
-                                <p class="text-xl md:text-2xl font-bold">$4.200.000</p>
-                            </div>
-                            <div class="bg-white bg-opacity-20 p-2 rounded-full">
-                                <i class="fas fa-wallet text-sm"></i>
-                            </div>
-                        </div>
-                        <p class="text-xs opacity-80 mt-3">•••• 6789</p>
-                        <span id="main-account-status-ribbon" class="status-badge-blocked inline-block absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full transform rotate-12">BLOQUÉ</span>
-                    </div>
-                    <div class="card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-5 text-white shadow-hard">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm opacity-90 mb-1">Compte Épargne</p>
-                                <p class="text-xl md:text-2xl font-bold">$1.600.000</p>
-                            </div>
-                            <div class="bg-white bg-opacity-20 p-2 rounded-full">
-                                <i class="fas fa-piggy-bank text-sm"></i>
-                            </div>
-                        </div>
-                        <p class="text-xs opacity-80 mt-3">•••• 1234</p>
-                    </div>
-                </div>
+            <div id="comptes-page" class="sub-page p-4 md:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue">Mes comptes</h1>
+                    <button class="btn bg-b2bYellow text-b2bBlue px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500" id="toggle-account-status-btn">
+                        <i class="fas fa-lock mr-1"></i> Gérer statut compte
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <div id="main-account-card" class="card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-5 text-white shadow-hard relative">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm opacity-90 mb-1">Compte Principal</p>
+                                <p class="text-xl md:text-2xl font-bold">$4.200.000</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 p-2 rounded-full">
+                                <i class="fas fa-wallet text-sm"></i>
+                            </div>
+                            </div>
+                        <p class="text-xs opacity-80 mt-3">•••• 6789</p>
+                        <span id="main-account-status-ribbon" class="status-badge-blocked inline-block absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full transform rotate-12">BLOQUÉ</span>
+                    </div>
+                    <div class="card bg-gradient-to-r from-b2bBlue to-b2bYellow rounded-xl p-5 text-white shadow-hard">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm opacity-90 mb-1">Compte Épargne</p>
+                                <p class="text-xl md:text-2xl font-bold">$1.600.000</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 p-2 rounded-full">
+                                <i class="fas fa-piggy-bank text-sm"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs opacity-80 mt-3">•••• 1234</p>
+                    </div>
+                </div>
 
-                <div class="card bg-white rounded-xl p-6 shadow-soft">
-                    <h2 class="text-lg font-semibold text-b2bBlue mb-4">Détail des comptes</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-gray-600">
-                            <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="pb-3 font-semibold text-b2bBlue">Compte</th>
-                                    <th class="pb-3 font-semibold text-b2bBlue">Numéro</th>
-                                    <th class="pb-3 font-semibold text-right text-b2bBlue">Solde</th>
-                                    <th class="pb-3 font-semibold text-right text-b2bBlue">Disponible</th>
-                                    <th class="pb-3 font-semibold text-center text-b2bBlue">Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-3 pl-1 font-bold text-b2bBlue">Compte Principal</td>
-                                    <td class="py-3 text-b2bBlue">•••• 6789</td>
-                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$2,800,000</td>
-                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$2,800,000</td>
-                                    <td class="py-3 text-center">
-                                        <span id="main-account-status-table" class="inline-block bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full status-badge-blocked">
-                                            BLOQUÉ
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-3 pl-1 font-bold text-b2bBlue">Compte Épargne</td>
-                                    <td class="py-3 text-b2bBlue">•••• 1234</td>
-                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$1.600.000</td>
-                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$1.600.000</td>
-                                    <td class="py-3 text-center">
-                                        <span class="inline-block bg-green-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                            Bloqué
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                <div class="card bg-white rounded-xl p-6 shadow-soft">
+                    <h2 class="text-lg font-semibold text-b2bBlue mb-4">Détail des comptes</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-gray-600">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="pb-3 font-semibold text-b2bBlue">Compte</th>
+                                    <th class="pb-3 font-semibold text-b2bBlue">Numéro</th>
+                                    <th class="pb-3 font-semibold text-right text-b2bBlue">Solde</th>
+                                    <th class="pb-3 font-semibold text-right text-b2bBlue">Disponible</th>
+                                    <th class="pb-3 font-semibold text-center text-b2bBlue">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="py-3 pl-1 font-bold text-b2bBlue">Compte Principal</td>
+                                    <td class="py-3 text-b2bBlue">•••• 6789</td>
+                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$2,800,000</td>
+                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$2,800,000</td>
+                                    <td class="py-3 text-center">
+                                        <span id="main-account-status-table" class="inline-block bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full status-badge-blocked">
+                                            BLOQUÉ
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="py-3 pl-1 font-bold text-b2bBlue">Compte Épargne</td>
+                                    <td class="py-3 text-b2bBlue">•••• 1234</td>
+                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$1.600.000</td>
+                                    <td class="py-3 text-right text-b2bBlue text-lg font-semibold">$1.600.000</td>
+                                    <td class="py-3 text-center">
+                                        <span class="inline-block bg-green-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                            Bloqué
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-            <div id="virements-page" class="sub-page p-4 md:p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue">Virements</h1>
-                    <button class="btn bg-b2bYellow text-b2bBlue px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500" id="new-transfer-btn">
-                        <i class="fas fa-plus mr-1"></i> Nouveau virement
-                    </button>
-                </div>
+            <div id="virements-page" class="sub-page p-4 md:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue">Virements</h1>
+                    <button class="btn bg-b2bYellow text-b2bBlue px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500" id="new-transfer-btn">
+                        <i class="fas fa-plus mr-1"></i> Nouveau virement
+                    </button>
+                </div>
 
-                <div class="card bg-white rounded-xl p-6 shadow-soft mb-6">
-                    <div id="transfer-blocked-message" class="alert-blocked" style="display: none;">
-                        <i class="fas fa-lock icon"></i>
-                        <div>
-                            <p class="font-bold">Les virements sont désactivés.</p>
-                            <p class="text-sm">Votre compte principal étant bloqué, aucune nouvelle transaction ne peut être initiée.</p>
-                        </div>
-                    </div>
+                <div class="card bg-white rounded-xl p-6 shadow-soft mb-6">
+                    <div id="transfer-blocked-message" class="alert-blocked" style="display: none;">
+                        <i class="fas fa-lock icon"></i>
+                        <div>
+                            <p class="font-bold">Les virements sont désactivés.</p>
+                            <p class="text-sm">Votre compte principal étant bloqué, aucune nouvelle transaction ne peut être initiée.</p>
+                        </div>
+                    </div>
 
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-                        <div class="mb-3 md:mb-0">
-                            <h2 class="text-lg font-semibold text-b2bBlue">Historique des virements</h2>
-                            <p class="text-sm text-gray-500">Les transactions de 2021 à avril 2022</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <input type="date" class="border border-gray-300 rounded-lg px-3 py-1 text-sm w-full md:w-auto" id="transfers-date" value="2022-04-22"/>
-                            <select class="border border-gray-300 rounded-lg px-3 py-1 text-sm" id="transfers-status">
-                                <option value="all">Tous</option>
-                                <option value="completed">Complétés</option>
-                                <option value="pending">En attente</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-gray-600">
-                            <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="pb-3 font-semibold text-b2bBlue">Référence</th>
-                                    <th class="pb-3 font-semibold text-b2bBlue">De</th>
-                                    <th class="pb-3 font-semibold text-b2bBlue">À</th>
-                                    <th class="pb-3 font-semibold text-right text-b2bBlue">Montant</th>
-                                    <th class="pb-3 font-semibold text-b2bBlue">Date</th>
-                                    <th class="pb-3 font-semibold text-b2bBlue">Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                <tr><td colspan="6" class="bg-gray-100 py-2 px-3 font-semibold text-b2bBlue">Avril 2022</td></tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-3 pl-1 text-b2bBlue font-medium">VIR-20220420-001</td>
-                                    <td class="py-3 text-b2bBlue">Compte Principal</td>
-                                    <td class="py-3 text-b2bBlue">Hydro-Québec (•••• 9012)</td>
-                                    <td class="py-3 text-right amount-debit">-$120.50</td>
-                                    <td class="py-3 text-b2bBlue">20/04/2022</td>
-                                    <td class="py-3">
-                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                            Complété
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-3 pl-1 text-b2bBlue font-medium">VIR-20220419-002</td>
-                                    <td class="py-3 text-b2bBlue">Compte Principal</td>
-                                    <td class="py-3 text-b2bBlue">Jean Dupont (•••• 3456)</td>
-                                    <td class="py-3 text-right amount-credit">+$50.00</td>
-                                    <td class="py-3 text-b2bBlue">19/04/2022</td>
-                                    <td class="py-3">
-                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                            Complété
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr><td colspan="6" class="bg-gray-100 py-2 px-3 font-semibold text-b2bBlue">Mars 2022</td></tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-3 pl-1 text-b2bBlue font-medium">VIR-20220325-003</td>
-                                    <td class="py-3 text-b2bBlue">Compte Principal</td>
-                                    <td class="py-3 text-b2bBlue">Gestion Immobilière (Loyer)</td>
-                                    <td class="py-3 text-right amount-debit">-$850.00</td>
-                                    <td class="py-3 text-b2bBlue">25/03/2022</td>
-                                    <td class="py-3">
-                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                            Complété
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-3 pl-1 text-b2bBlue font-medium">VIR-20220310-004</td>
-                                    <td class="py-3 text-b2bBlue">Compte Épargne</td>
-                                    <td class="py-3 text-b2bBlue">Transfert Interne (Vers Principal)</td>
-                                    <td class="py-3 text-right amount-debit">-$200.00</td>
-                                    <td class="py-3 text-b2bBlue">10/03/2022</td>
-                                    <td class="py-3">
-                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                            Complété
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr><td colspan="6" class="bg-gray-100 py-2 px-3 font-semibold text-b2bBlue">Février 2022</td></tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-3 pl-1 text-b2bBlue font-medium">VIR-20220215-005</td>
-                                    <td class="py-3 text-b2bBlue">Compte Principal</td>
-                                    <td class="py-3 text-b2bBlue">Télécom Plus</td>
-                                    <td class="py-3 text-right amount-debit">-$65.00</td>
-                                    <td class="py-3 text-b2bBlue">15/02/2022</td>
-                                    <td class="py-3">
-                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                            Complété
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="profil-page" class="sub-page p-4 md:p-8">
-                <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue mb-6">Mon profil</h1>
-                <div class="card bg-white rounded-xl p-6 shadow-soft">
-                    <h2 class="text-lg font-semibold text-b2bBlue mb-4">Informations personnelles</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-500">Nom Complet</p>
-                            <p class="font-medium text-b2bBlue">Jean Gaston Fuster</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Adresse Email</p>
-                            <p class="font-medium text-b2bBlue">Philippe.marceldestres@gmx.com</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Téléphone</p>
-                            <p class="font-medium text-b2bBlue">+1 6 12 34 56 75</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Adresse</p>
-                            <p class="font-medium text-b2bBlue">123 Rue de la Banque, Montreal</p>
-                        </div>
-                    </div>
-                    <button class="btn bg-b2bYellow text-b2bBlue px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500 mt-6">
-                        Modifier le profil
-                    </button>
-                </div>
-            </div>
-
-            <div id="aide-page" class="sub-page p-4 md:p-8">
-                <h1 class="text-2xl md:text-3xl font-semibold text-b2bBlue mb-6">Aide et Support</h1>
-                <div class="card bg-white rounded-xl p-6 shadow-soft mb-6">
-                    <h2 class="text-lg font-semibold text-b2bBlue mb-4">Foire aux questions (FAQ)</h2>
-                    <div class="space-y-4">
-                        <div>
-                            <h3 class="font-medium text-b2bBlue">Comment puis-je réinitialiser mon mot de passe ?</h3>
-                            <p class="text-gray-600 text-sm mt-1">Vous pouvez réinitialiser votre mot de passe depuis la page de connexion en cliquant sur "Mot de passe oublié ?".</p>
-                        </div>
-                        <div>
-                            <h3 class="font-medium text-b2bBlue">Mon compte est bloqué, que dois-je faire ?</h3>
-                            <p class="text-gray-600 text-sm mt-1">Si votre compte est bloqué, veuillez contacter notre service client au <span class="font-semibold">+33 1 23 45 67 89</span>.</p>
-                        </div>
-                        <div>
-                            <h3 class="font-medium text-b2bBlue">Comment effectuer un virement international ?</h3>
-                            <p class="text-gray-600 text-sm mt-1">Les virements internationaux peuvent être effectués via la section "Virements" en sélectionnant l'option "Virement international".</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card bg-white rounded-xl p-6 shadow-soft">
-                    <h2 class="text-lg font-semibold text-b2bBlue mb-4">Contacter le support</h2>
-                    <p class="text-gray-600 mb-4">Si vous n'avez pas trouvé la réponse à votre question, n'hésitez pas à nous contacter :</p>
-                    <ul class="space-y-3">
-                        <li>
-                            <i class="fas fa-phone-alt text-b2bBlue mr-2"></i>
-                            <span class="font-medium text-b2bBlue">Téléphone :</span> +1 1 23 45 67 89
-                        </li>
-                        <li>
-                            <i class="fas fa-envelope text-b2bBlue mr-2"></i>
-                            <span class="font-medium text-b2bBlue">Email :</span> support@b2bbanque.com
-                        </li>
-                        <li>
-                            <i class="fas fa-headset text-b2bBlue mr-2"></i>
-                            <span class="font-medium text-b2bBlue">Horaires :</span> Du lundi au vendredi, 9h - 18h
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        // Fonction pour afficher le bon sous-page du tableau de bord
-        function showSubPage(pageId) {
-            document.querySelectorAll('.sub-page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`.nav-item[data-target="${pageId}"]`).classList.add('active');
-        }
-
-        // Gestion des clics sur les éléments de navigation du tableau de bord
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const targetPage = this.dataset.target;
-                showSubPage(targetPage);
-            });
-        });
-
-        // Gestion des liens internes vers les sous-pages (ex: "Voir tout" dans Activité récente)
-        document.querySelectorAll('a[data-link]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetPage = this.dataset.link;
-                showSubPage(targetPage);
-            });
-        });
-
-        // Toggle Password Visibility
-        const togglePassword = document.getElementById('toggle-password-visibility');
-        const passwordInput = document.getElementById('password-input');
-        const passwordToggleIcon = document.getElementById('password-toggle-icon');
-
-        if (togglePassword) {
-            togglePassword.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                // toggle the eye icon
-                passwordToggleIcon.classList.toggle('fa-eye');
-                passwordToggleIcon.classList.toggle('fa-eye-slash');
-            });
-        }
-
-        // Get current date for dashboard
-        const currentDateElement = document.getElementById('current-date');
-        if (currentDateElement) {
-            const today = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            currentDateElement.textContent = today.toLocaleDateString('fr-FR', options);
-        }
-
-        // Logic for account status (to simulate blocked/unblocked)
-        let isMainAccountBlocked = true; // Initial state
-
-        function updateAccountStatusDisplay() {
-            const alertElement = document.getElementById('account-blocked-alert');
-            const mainAccountRibbonDashboard = document.getElementById('main-account-status-ribbon-dashboard');
-            const mainAccountRibbonComptes = document.getElementById('main-account-status-ribbon');
-            const mainAccountStatusTable = document.getElementById('main-account-status-table');
-            const dashboardMainAccountStatus = document.getElementById('dashboard-main-account-status');
-            const newTransferBtn = document.getElementById('new-transfer-btn');
-            const transferBlockedMessage = document.getElementById('transfer-blocked-message');
-            const sidebarAccountStatus = document.getElementById('sidebar-account-status');
-            const mobileSidebarStatus = document.getElementById('mobile-sidebar-status');
-
-            if (isMainAccountBlocked) {
-                alertElement.style.display = 'flex';
-                if (mainAccountRibbonDashboard) mainAccountRibbonDashboard.style.display = 'inline-block';
-                if (mainAccountRibbonComptes) mainAccountRibbonComptes.style.display = 'inline-block';
-                if (mainAccountStatusTable) {
-                    mainAccountStatusTable.textContent = 'BLOQUÉ';
-                    mainAccountStatusTable.classList.remove('bg-green-100', 'text-green-800');
-                    mainAccountStatusTable.classList.add('bg-red-100', 'text-red-800', 'status-badge-blocked');
-                }
-                if (dashboardMainAccountStatus) dashboardMainAccountStatus.textContent = 'Bloqué';
-                
-                // Show "Compte Bloqué" in sidebar and mobile header
-                if (sidebarAccountStatus) sidebarAccountStatus.style.display = 'block';
-                if (mobileSidebarStatus) mobileSidebarStatus.style.display = 'block';
-
-                // Disable new transfer button and show message
-                if (newTransferBtn) newTransferBtn.disabled = true;
-                if (transferBlockedMessage) transferBlockedMessage.style.display = 'flex';
-            } else {
-                alertElement.style.display = 'none';
-                if (mainAccountRibbonDashboard) mainAccountRibbonDashboard.style.display = 'none';
-                if (mainAccountRibbonComptes) mainAccountRibbonComptes.style.display = 'none';
-                if (mainAccountStatusTable) {
-                    mainAccountStatusTable.textContent = 'Actif';
-                    mainAccountStatusTable.classList.remove('bg-red-100', 'text-red-800', 'status-badge-blocked');
-                    mainAccountStatusTable.classList.add('bg-green-100', 'text-green-800');
-                }
-                if (dashboardMainAccountStatus) dashboardMainAccountStatus.textContent = 'Actif';
-
-                // Hide "Compte Bloqué" in sidebar and mobile header
-                if (sidebarAccountStatus) sidebarAccountStatus.style.display = 'none';
-                if (mobileSidebarStatus) mobileSidebarStatus.style.display = 'none';
-
-
-                // Enable new transfer button and hide message
-                if (newTransferBtn) newTransferBtn.disabled = false;
-                if (transferBlockedMessage) transferBlockedMessage.style.display = 'none';
-            }
-        }
-
-        const toggleAccountStatusBtn = document.getElementById('toggle-account-status-btn');
-        if (toggleAccountStatusBtn) {
-            toggleAccountStatusBtn.addEventListener('click', function() {
-                isMainAccountBlocked = !isMainAccountBlocked;
-                updateAccountStatusDisplay();
-            });
-        }
-
-        // Initial update on page load
-        updateAccountStatusDisplay();
-
-
-        // Page navigation logic
-        document.getElementById('login-btn').addEventListener('click', () => {
-            document.getElementById('home-page').classList.remove('active');
-            document.getElementById('login-form').classList.add('active');
-        });
-
-        document.getElementById('login-btn-2').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('home-page').classList.remove('active');
-            document.getElementById('login-form').classList.add('active');
-        });
-
-        document.getElementById('login-form-content').addEventListener('submit', (e) => {
-            e.preventDefault();
-            document.getElementById('login-form').classList.remove('active');
-            document.getElementById('dashboard').classList.add('active');
-            showSubPage('dashboard-page');
-        });
-
-        document.getElementById('logout-btn-dashboard').addEventListener('click', () => {
-            document.getElementById('dashboard').classList.remove('active');
-            document.getElementById('home-page').classList.add('active');
-        });
-    </script>
-</body>
-</html>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                        <div class="mb-3 md:mb-0">
+                            <h2 class="text-lg font-semibold text-b2bBlue">Historique des virements</h2>
+                            <p class="text-sm text-gray-500">Les transactions de 2021 à avril 2022</p>
+                        </div>
